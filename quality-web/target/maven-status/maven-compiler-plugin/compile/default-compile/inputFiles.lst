@@ -4,8 +4,10 @@ E:\code\质量检测管理系统技术方案-QIMS\QIMS-backend\quality-web\src\main\java\com
 E:\code\质量检测管理系统技术方案-QIMS\QIMS-backend\quality-web\src\main\java\com\qims\web\dto\UserFormDTO.java
 E:\code\质量检测管理系统技术方案-QIMS\QIMS-backend\quality-web\src\main\java\com\qims\web\security\SecurityConfig.java
 E:\code\质量检测管理系统技术方案-QIMS\QIMS-backend\quality-web\src\main\java\com\qims\web\controller\InspectionRecordController.java
+E:\code\质量检测管理系统技术方案-QIMS\QIMS-backend\quality-web\src\main\java\com\qims\web\controller\PermissionController.java
 E:\code\质量检测管理系统技术方案-QIMS\QIMS-backend\quality-web\src\main\java\com\qims\web\test\PasswordGen.java
 E:\code\质量检测管理系统技术方案-QIMS\QIMS-backend\quality-web\src\main\java\com\qims\web\QualityApplication.java
+E:\code\质量检测管理系统技术方案-QIMS\QIMS-backend\quality-web\src\main\java\com\qims\web\controller\LogController.java
 E:\code\质量检测管理系统技术方案-QIMS\QIMS-backend\quality-web\src\main\java\com\qims\web\controller\UserController.java
 E:\code\质量检测管理系统技术方案-QIMS\QIMS-backend\quality-web\src\main\java\com\qims\web\controller\ReportController.java
 E:\code\质量检测管理系统技术方案-QIMS\QIMS-backend\quality-web\src\main\java\com\qims\web\controller\StatisticsController.java

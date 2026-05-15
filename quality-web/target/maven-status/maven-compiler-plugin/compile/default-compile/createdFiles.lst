@@ -2,6 +2,7 @@ com\qims\web\controller\InspectionItemController.class
 com\qims\web\controller\AuthController.class
 com\qims\web\controller\DepartmentController.class
 com\qims\web\security\SecurityConfig.class
+com\qims\web\controller\PermissionController.class
 com\qims\web\QualityApplication.class
 com\qims\web\controller\ReportController.class
 com\qims\web\controller\ImplementationPlanController.class
