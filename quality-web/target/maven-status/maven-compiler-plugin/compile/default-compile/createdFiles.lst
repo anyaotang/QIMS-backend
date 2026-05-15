@@ -11,4 +11,5 @@ com\qims\web\controller\UserController.class
 com\qims\web\controller\InspectionRecordController.class
 com\qims\web\dto\UserFormDTO.class
 com\qims\web\controller\StatisticsController.class
+com\qims\web\controller\LogController.class
 com\qims\web\controller\NodeController.class
