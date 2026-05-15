@@ -23,4 +23,5 @@ public class LoginResponse {
     private Long departmentId;
     private List<String> roles;
     private List<String> permissions;
+    private List<MenuDTO> menus;
 }

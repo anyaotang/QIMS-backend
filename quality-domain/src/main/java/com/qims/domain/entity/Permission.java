@@ -30,4 +30,13 @@ public class Permission extends BaseEntity {
 
     /** 菜单图标名称（Element Plus 图标名） */
     private String icon;
+
+    /** 排序（同级内序号，升序） */
+    private Integer sort;
+
+    /** 前端组件路径 */
+    private String component;
+
+    /** 状态：1-启用 0-禁用 */
+    private Integer status;
 }

@@ -5,6 +5,7 @@ import com.qims.domain.entity.ImplementationPlan;
 import com.qims.service.dto.FeedbackDTO;
 import com.qims.service.service.ImplementationFeedbackService;
 import com.qims.service.service.ImplementationPlanService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,7 @@ public class ImplementationPlanController {
      * 获取方案树
      */
     @GetMapping("/plan/tree")
+    @PreAuthorize("hasAuthority('plan:view')")
     public R<List<ImplementationPlan>> getPlanTree() {
         return R.ok(planService.getTree());
     }
@@ -33,6 +35,7 @@ public class ImplementationPlanController {
      * 新增方案
      */
     @PostMapping("/plan")
+    @PreAuthorize("hasAuthority('plan:add')")
     public R<Void> savePlan(@RequestBody ImplementationPlan plan) {
         planService.save(plan);
         return R.ok();
@@ -42,6 +45,7 @@ public class ImplementationPlanController {
      * 更新方案
      */
     @PutMapping("/plan")
+    @PreAuthorize("hasAuthority('plan:edit')")
     public R<Void> updatePlan(@RequestBody ImplementationPlan plan) {
         planService.updateById(plan);
         return R.ok();
@@ -51,6 +55,7 @@ public class ImplementationPlanController {
      * 删除方案
      */
     @DeleteMapping("/plan/{id}")
+    @PreAuthorize("hasAuthority('plan:delete')")
     public R<Void> deletePlan(@PathVariable Long id) {
         planService.removeById(id);
         return R.ok();
@@ -60,6 +65,7 @@ public class ImplementationPlanController {
      * 提交反馈
      */
     @PostMapping("/feedback")
+    @PreAuthorize("hasAuthority('feedback:add')")
     public R<Void> submitFeedback(@RequestBody FeedbackDTO dto) {
         feedbackService.submitFeedback(dto.getPlanId(), dto.getContent());
         return R.ok();

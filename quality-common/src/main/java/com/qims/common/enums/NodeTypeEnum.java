@@ -4,21 +4,22 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 节点类型枚举
+ * 节点类型枚举（对应 qims_node.type 字段）
  */
 @Getter
 @AllArgsConstructor
 public enum NodeTypeEnum {
 
-    DEPARTMENT(0, "部门"),
-    PRODUCT(1, "产品"),
-    PROCESS(2, "工序"),
-    INSPECTION_POINT(3, "检测点");
+    FACTORY("工厂", "工厂"),
+    WORKSHOP("车间", "车间"),
+    PRODUCTION_LINE("生产线", "生产线"),
+    EQUIPMENT("设备", "设备"),
+    INSPECTION_STATION("检测工位", "检测工位");
 
-    private final Integer code;
+    private final String code;
     private final String desc;
 
-    public static NodeTypeEnum fromCode(Integer code) {
+    public static NodeTypeEnum fromCode(String code) {
         for (NodeTypeEnum s : values()) {
             if (s.code.equals(code)) {
                 return s;

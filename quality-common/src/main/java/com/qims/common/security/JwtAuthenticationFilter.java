@@ -56,12 +56,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 if (deptId != null) {
                     request.setAttribute("departmentId", ((Number) deptId).longValue());
                 }
+                // 设置数据权限上下文
+                Long userIdVal = userId != null ? ((Number) userId).longValue() : null;
+                Long deptIdVal = deptId != null ? ((Number) deptId).longValue() : null;
+                Object dataScopeObj = claims.get("dataScope");
+                Integer dataScope = dataScopeObj != null ? ((Number) dataScopeObj).intValue() : 4;
+                com.qims.common.datascope.DataScopeContext.set(userIdVal, deptIdVal, dataScope);
             } catch (Exception e) {
                 log.warn("Failed to extract JWT claims to request attributes: {}", e.getMessage());
             }
         }
 
-        filterChain.doFilter(request, response);
+        try {
+            filterChain.doFilter(request, response);
+        } finally {
+            com.qims.common.datascope.DataScopeContext.clear();
+        }
     }
 
     private String resolveToken(HttpServletRequest request) {

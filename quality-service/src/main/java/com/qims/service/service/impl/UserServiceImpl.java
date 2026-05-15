@@ -27,7 +27,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 检查用户名是否已存在
         Long existingId = baseMapper.selectIdByUsername(user.getUsername());
         if (existingId != null && !existingId.equals(user.getId())) {
-            throw new com.qims.common.exception.BizException("用户名已存在");
+            throw new com.qims.common.exception.BizException(400, "用户名已存在");
         }
         // 密码加密
         if (user.getPassword() != null && !user.getPassword().isBlank()) {
@@ -59,7 +59,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public void resetPassword(Long userId) {
         User user = baseMapper.selectById(userId);
         if (user == null) {
-            throw new com.qims.common.exception.BizException("用户不存在");
+            throw new com.qims.common.exception.BizException(404, "用户不存在");
         }
         user.setPassword(passwordEncoder.encode("123456"));
         baseMapper.updateById(user);

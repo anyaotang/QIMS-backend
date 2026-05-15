@@ -29,7 +29,7 @@ public class InspectionRecordServiceImpl extends ServiceImpl<InspectionRecordMap
     public void manualRecord(RecordManualDTO dto) {
         InspectionItem item = itemMapper.selectById(dto.getItemId());
         if (item == null) {
-            throw new BizException("检测项不存在");
+            throw new BizException(404, "检测项不存在");
         }
 
         InspectionRecord record = new InspectionRecord();

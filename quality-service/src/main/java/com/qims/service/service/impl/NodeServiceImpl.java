@@ -36,7 +36,7 @@ public class NodeServiceImpl extends ServiceImpl<NodeMapper, Node> implements No
     }
 
     @Override
-    public List<Node> listNodes(Integer type, Long parentId) {
+    public List<Node> listNodes(String type, Long parentId) {
         LambdaQueryWrapper<Node> wrapper = new LambdaQueryWrapper<>();
         if (type != null) {
             wrapper.eq(Node::getType, type);
@@ -52,7 +52,7 @@ public class NodeServiceImpl extends ServiceImpl<NodeMapper, Node> implements No
     public void moveNode(Long id, Long parentId, Integer orderNum) {
         Node node = baseMapper.selectById(id);
         if (node == null) {
-            throw new com.qims.common.exception.BizException("节点不存在");
+            throw new com.qims.common.exception.BizException(404, "节点不存在");
         }
         if (parentId != null) {
             node.setParentId(parentId);

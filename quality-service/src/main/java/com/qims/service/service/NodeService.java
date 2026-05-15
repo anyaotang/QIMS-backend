@@ -19,7 +19,7 @@ public interface NodeService extends IService<Node> {
     /**
      * 获取节点列表（平铺）
      */
-    List<Node> listNodes(Integer type, Long parentId);
+    List<Node> listNodes(String type, Long parentId);
 
     /**
      * 移动节点

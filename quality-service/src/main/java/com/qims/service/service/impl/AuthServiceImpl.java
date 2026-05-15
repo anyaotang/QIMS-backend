@@ -8,6 +8,7 @@ import com.qims.domain.entity.*;
 import com.qims.domain.mapper.*;
 import com.qims.service.dto.*;
 import com.qims.service.service.AuthService;
+import com.qims.service.service.PermissionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,23 +30,30 @@ public class AuthServiceImpl extends ServiceImpl<UserMapper, User> implements Au
     private final RoleMapper roleMapper;
     private final RolePermissionMapper rolePermissionMapper;
     private final PermissionMapper permissionMapper;
+    private final PermissionService permissionService;
 
     @Override
     public LoginResponse login(LoginRequest request) {
         User user = getByUsername(request.getUsername());
         if (user == null) {
-            throw new BizException("用户名或密码错误");
+            throw new BizException(401, "用户名或密码错误");
         }
         if (user.getDeleted() == 1) {
-            throw new BizException("账号已被禁用");
+            throw new BizException(403, "账号已被删除");
+        }
+        if (user.getStatus() != null && user.getStatus() == 0) {
+            throw new BizException(403, "账号已被禁用，请联系管理员");
         }
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new BizException("用户名或密码错误");
+            throw new BizException(401, "用户名或密码错误");
         }
 
         // 获取角色和权限
         List<String> roles = getUserRoles(user.getId());
         List<String> permissions = listPermissionCodesByUserId(user.getId());
+
+        // 计算数据范围（取角色中最宽松的，即 data_scope 最小值）
+        int dataScope = getUserDataScope(user.getId());
 
         // 生成 JWT
         String token = jwtTokenProvider.generateToken(
@@ -53,7 +61,8 @@ public class AuthServiceImpl extends ServiceImpl<UserMapper, User> implements Au
                 user.getUsername(),
                 user.getDepartmentId(),
                 roles,
-                permissions
+                permissions,
+                dataScope
         );
 
         return LoginResponse.builder()
@@ -64,6 +73,7 @@ public class AuthServiceImpl extends ServiceImpl<UserMapper, User> implements Au
                 .departmentId(user.getDepartmentId())
                 .roles(roles)
                 .permissions(permissions)
+                .menus(permissionService.getUserMenuTree(user.getId()))
                 .build();
     }
 
@@ -71,7 +81,7 @@ public class AuthServiceImpl extends ServiceImpl<UserMapper, User> implements Au
     public void register(RegisterRequest request) {
         // 检查用户名是否已存在
         if (getByUsername(request.getUsername()) != null) {
-            throw new BizException("用户名已存在");
+            throw new BizException(400, "用户名已存在");
         }
 
         User user = new User();
@@ -102,6 +112,26 @@ public class AuthServiceImpl extends ServiceImpl<UserMapper, User> implements Au
                 new LambdaQueryWrapper<User>()
                         .eq(User::getUsername, username)
         );
+    }
+
+    /**
+     * 获取用户数据范围（取角色中最宽松的，data_scope 最小值）
+     * 1=全部 2=本部门 3=本部门及子部门 4=仅本人
+     */
+    private int getUserDataScope(Long userId) {
+        List<UserRole> userRoles = userRoleMapper.selectList(
+                new LambdaQueryWrapper<UserRole>().eq(UserRole::getUserId, userId)
+        );
+        if (userRoles.isEmpty()) {
+            return 4; // 无角色默认仅本人
+        }
+        List<Long> roleIds = userRoles.stream().map(UserRole::getRoleId).collect(Collectors.toList());
+        List<Role> roles = roleMapper.selectBatchIds(roleIds);
+        // 取 data_scope 最小值（最宽松）
+        return roles.stream()
+                .mapToInt(r -> r.getDataScope() != null ? r.getDataScope() : 4)
+                .min()
+                .orElse(4);
     }
 
     /**
@@ -150,105 +180,6 @@ public class AuthServiceImpl extends ServiceImpl<UserMapper, User> implements Au
     
     @Override
     public List<MenuDTO> getUserMenus(Long userId) {
-        // 1. 查询用户所有权限（含父级节点）
-        List<Permission> allPermissions = listPermissionsByUserId(userId);
-        if (allPermissions.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        // 2. 转换为 MenuDTO 列表（填充 path 和 icon）
-        List<MenuDTO> menuList = allPermissions.stream().map(p -> {
-            String code = p.getCode();
-            Integer typeVal = p.getType() != null ? p.getType() : 1;
-            Long parentIdVal = p.getParentId();
-            return MenuDTO.builder()
-                    .id(p.getId())
-                    .name(p.getName())
-                    .code(code)
-                    .type(typeVal)
-                    .parentId(parentIdVal)
-                    .path(p.getPath())
-                    .icon(p.getIcon())
-                    .children(new ArrayList<>())
-                    .build();
-        }).collect(Collectors.toList());
-
-        // 3. 构建树形结构（parent_id=null 的为根节点）
-        return buildMenuTree(menuList);
-    }
-
-    /**
-     * 查询用户关联的所有权限实体（包含父级菜单节点）
-     */
-    private List<Permission> listPermissionsByUserId(Long userId) {
-        // 获取用户角色
-        List<UserRole> userRoles = userRoleMapper.selectList(
-                new LambdaQueryWrapper<UserRole>().eq(UserRole::getUserId, userId)
-        );
-        if (userRoles.isEmpty()) {
-            return new ArrayList<>();
-        }
-        List<Long> roleIds = userRoles.stream().map(UserRole::getRoleId).collect(Collectors.toList());
-
-        // 获取角色关联的权限ID
-        List<RolePermission> rolePermissions = rolePermissionMapper.selectList(
-                new LambdaQueryWrapper<RolePermission>().in(RolePermission::getRoleId, roleIds)
-        );
-        if (rolePermissions.isEmpty()) {
-            return new ArrayList<>();
-        }
-        List<Long> permissionIds = rolePermissions.stream()
-                .map(RolePermission::getPermissionId).distinct().collect(Collectors.toList());
-
-        // 查询所有权限实体
-        return permissionMapper.selectBatchIds(permissionIds);
-    }
-
-    /**
-     * 构建菜单树：将平铺列表转为层级结构
-     */
-    private List<MenuDTO> buildMenuTree(List<MenuDTO> menuList) {
-        List<MenuDTO> roots = new ArrayList<>();
-        java.util.Map<Long, MenuDTO> menuMap = new java.util.HashMap<>();
-
-        // 建立映射
-        for (MenuDTO menu : menuList) {
-            menuMap.put(menu.getId(), menu);
-        }
-
-        // 组装树
-        for (MenuDTO menu : menuList) {
-            if (menu.getParentId() == null || menu.getParentId() == 0L) {
-                roots.add(menu);
-            } else {
-                MenuDTO parent = menuMap.get(menu.getParentId());
-                if (parent != null) {
-                    parent.getChildren().add(menu);
-                } else {
-                    // 父级不在列表中，作为根节点
-                    roots.add(menu);
-                }
-            }
-        }
-
-        // 排序：按 id 升序
-        roots.sort((a, b) -> a.getId().compareTo(b.getId()));
-        for (MenuDTO root : roots) {
-            sortChildren(root);
-        }
-
-        return roots;
-    }
-
-    /**
-     * 递归排序子菜单
-     */
-    private void sortChildren(MenuDTO menu) {
-        if (menu.getChildren() != null && !menu.getChildren().isEmpty()) {
-            menu.getChildren().sort((a, b) -> a.getId().compareTo(b.getId()));
-            for (MenuDTO child : menu.getChildren()) {
-                sortChildren(child);
-            }
-        }
+        return permissionService.getUserMenuTree(userId);
     }
 }

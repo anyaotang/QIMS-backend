@@ -4,6 +4,7 @@ import com.qims.common.result.R;
 import com.qims.domain.entity.Department;
 import com.qims.service.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class DepartmentController {
      * 获取部门树
      */
     @GetMapping("/tree")
+    @PreAuthorize("hasAuthority('department:view')")
     public R<List<Department>> tree() {
         return R.ok(departmentService.getTree());
     }
@@ -30,6 +32,7 @@ public class DepartmentController {
      * 获取部门列表
      */
     @GetMapping("/list")
+    @PreAuthorize("hasAuthority('department:view')")
     public R<List<Department>> list() {
         return R.ok(departmentService.list());
     }
@@ -38,6 +41,7 @@ public class DepartmentController {
      * 创建部门
      */
     @PostMapping
+    @PreAuthorize("hasAuthority('department:add')")
     public R<Void> create(@RequestBody Department department) {
         departmentService.save(department);
         return R.ok();
@@ -47,6 +51,7 @@ public class DepartmentController {
      * 更新部门
      */
     @PutMapping
+    @PreAuthorize("hasAuthority('department:edit')")
     public R<Void> update(@RequestBody Department department) {
         departmentService.updateById(department);
         return R.ok();
@@ -56,6 +61,7 @@ public class DepartmentController {
      * 删除部门
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('department:delete')")
     public R<Void> delete(@PathVariable Long id) {
         departmentService.removeById(id);
         return R.ok();
@@ -65,6 +71,7 @@ public class DepartmentController {
      * 设置部门继承角色
      */
     @PutMapping("/{id}/inherit-role")
+    @PreAuthorize("hasAuthority('department:edit')")
     public R<Void> setInheritRole(@PathVariable Long id, @RequestBody List<Long> roleIds) {
         departmentService.setInheritRole(id, roleIds);
         return R.ok();

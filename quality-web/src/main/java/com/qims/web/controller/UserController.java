@@ -1,9 +1,11 @@
 package com.qims.web.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.qims.common.datascope.DataScopeService;
 import com.qims.common.result.R;
 import com.qims.domain.entity.User;
 import com.qims.service.service.UserService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,25 +19,26 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final DataScopeService dataScopeService;
 
     /**
      * 分页查询用户
      */
     @GetMapping("/page")
+    @PreAuthorize("hasAuthority('user:view')")
     public R<Page<User>> page(@RequestParam(defaultValue = "1") int page,
                               @RequestParam(defaultValue = "10") int size,
                               @RequestParam(required = false) Long departmentId) {
-        Page<User> result;
+        com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<User> wrapper =
+            new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<User>()
+                .eq(User::getStatus, 1);
         if (departmentId != null) {
-            result = userService.page(new Page<>(page, size),
-                new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<User>()
-                    .eq(User::getDepartmentId, departmentId)
-                    .eq(User::getStatus, 1));
+            wrapper.eq(User::getDepartmentId, departmentId);
         } else {
-            result = userService.page(new Page<>(page, size),
-                new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<User>()
-                    .eq(User::getStatus, 1));
+            // 没有指定部门ID时，根据数据权限自动过滤
+            dataScopeService.applyDeptScope(wrapper, User::getDepartmentId);
         }
+        Page<User> result = userService.page(new Page<>(page, size), wrapper);
         return R.ok(result);
     }
 
@@ -52,6 +55,7 @@ public class UserController {
      * 获取用户详情
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('user:view')")
     public R<User> getById(@PathVariable Long id) {
         return R.ok(userService.getById(id));
     }
@@ -60,6 +64,7 @@ public class UserController {
      * 新增用户
      */
     @PostMapping
+    @PreAuthorize("hasAuthority('user:add')")
     public R<Void> save(@RequestBody com.qims.web.dto.UserFormDTO dto) {
         userService.save(dto.toEntity());
         return R.ok();
@@ -69,6 +74,7 @@ public class UserController {
      * 更新用户
      */
     @PutMapping
+    @PreAuthorize("hasAuthority('user:edit')")
     public R<Void> update(@RequestBody com.qims.web.dto.UserFormDTO dto) {
         userService.save(dto.toEntity());
         return R.ok();
@@ -78,6 +84,7 @@ public class UserController {
      * 删除用户
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('user:delete')")
     public R<Void> delete(@PathVariable Long id) {
         userService.removeById(id);
         return R.ok();
@@ -87,6 +94,7 @@ public class UserController {
      * 重置用户密码
      */
     @PostMapping("/{id}/reset-password")
+    @PreAuthorize("hasAuthority('user:resetPwd')")
     public R<Void> resetPassword(@PathVariable Long id) {
         userService.resetPassword(id);
         return R.ok();

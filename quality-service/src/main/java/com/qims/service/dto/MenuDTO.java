@@ -25,7 +25,7 @@ public class MenuDTO {
     /** 权限编码 */
     private String code;
 
-    /** 类型：1-菜单 2-按钮 */
+    /** 类型：1-目录 2-菜单 3-按钮 */
     private Integer type;
 
     /** 父级ID */
@@ -39,6 +39,9 @@ public class MenuDTO {
 
     /** 图标 */
     private String icon;
+
+    /** 前端组件路径 */
+    private String component;
 
     /** 子菜单列表 */
     private List<MenuDTO> children;

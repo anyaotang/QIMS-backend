@@ -20,8 +20,8 @@ public class Node extends BaseEntity {
     /** 父节点ID，0 为根节点 */
     private Long parentId;
 
-    /** 节点类型：0-部门 1-产品 2-工序 3-检测点 */
-    private Integer type;
+    /** 节点类型：工厂/车间/生产线/设备/检测工位 */
+    private String type;
 
     /** 排序号 */
     private Integer sort;

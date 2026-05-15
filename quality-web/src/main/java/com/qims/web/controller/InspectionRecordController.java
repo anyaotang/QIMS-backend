@@ -6,6 +6,7 @@ import com.qims.common.result.R;
 import com.qims.domain.entity.InspectionRecord;
 import com.qims.service.dto.RecordManualDTO;
 import com.qims.service.service.InspectionRecordService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,7 @@ public class InspectionRecordController {
      * 分页查询检测记录
      */
     @GetMapping("/page")
+    @PreAuthorize("hasAuthority('record:manual')")
     public R<Page<InspectionRecord>> page(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -49,6 +51,7 @@ public class InspectionRecordController {
      * 手动录入检测记录
      */
     @PostMapping("/manual")
+    @PreAuthorize("hasAuthority('record:add')")
     public R<Void> manualRecord(@RequestBody RecordManualDTO dto) {
         recordService.manualRecord(dto);
         return R.ok();
@@ -58,6 +61,7 @@ public class InspectionRecordController {
      * 根据检测项ID查询记录列表
      */
     @GetMapping("/list")
+    @PreAuthorize("hasAuthority('record:manual')")
     public R<List<?>> listByItemId(@RequestParam Long itemId) {
         return R.ok(recordService.listByItemId(itemId));
     }
@@ -66,6 +70,7 @@ public class InspectionRecordController {
      * 获取记录详情
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('record:manual')")
     public R<InspectionRecord> getById(@PathVariable Long id) {
         return R.ok(recordService.getById(id));
     }
@@ -74,6 +79,7 @@ public class InspectionRecordController {
      * 删除记录
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('record:modify')")
     public R<Void> delete(@PathVariable Long id) {
         recordService.removeById(id);
         return R.ok();

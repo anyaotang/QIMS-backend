@@ -6,6 +6,7 @@ import com.qims.domain.entity.InspectionItem;
 import com.qims.quartz.service.QuartzScheduleService;
 import com.qims.service.dto.InspectionItemDTO;
 import com.qims.service.service.InspectionItemService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ public class InspectionItemController {
      * 分页查询检测项
      */
     @GetMapping("/page")
+    @PreAuthorize("hasAuthority('inspection:view')")
     public R<Page<InspectionItem>> page(@RequestParam(defaultValue = "1") int page,
                                          @RequestParam(defaultValue = "10") int size,
                                          @RequestParam(required = false) Long nodeId) {
@@ -35,6 +37,7 @@ public class InspectionItemController {
      * 获取检测项详情
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('inspection:view')")
     public R<InspectionItem> getById(@PathVariable Long id) {
         return R.ok(inspectionItemService.getById(id));
     }
@@ -43,6 +46,7 @@ public class InspectionItemController {
      * 新增检测项（同时动态注册 Quartz 任务）
      */
     @PostMapping
+    @PreAuthorize("hasAuthority('inspection:add')")
     public R<Long> create(@Valid @RequestBody InspectionItemDTO dto) {
         return saveOrUpdateItem(dto);
     }
@@ -51,6 +55,7 @@ public class InspectionItemController {
      * 更新检测项（同时动态注册 Quartz 任务）
      */
     @PutMapping
+    @PreAuthorize("hasAuthority('inspection:edit')")
     public R<Long> update(@Valid @RequestBody InspectionItemDTO dto) {
         return saveOrUpdateItem(dto);
     }
@@ -91,6 +96,7 @@ public class InspectionItemController {
      * 启用/禁用检测项
      */
     @PostMapping("/{id}/toggle-active")
+    @PreAuthorize("hasAuthority('inspection:edit')")
     public R<Void> toggleActive(@PathVariable Long id, @RequestBody java.util.Map<String, Boolean> body) {
         Boolean isActive = body.get("isActive");
         InspectionItem item = inspectionItemService.getById(id);
@@ -113,6 +119,7 @@ public class InspectionItemController {
      * 删除检测项（同时删除 Quartz 任务）
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('inspection:delete')")
     public R<Void> delete(@PathVariable Long id) {
         // 先删除 Quartz 任务（忽略失败）
         try {

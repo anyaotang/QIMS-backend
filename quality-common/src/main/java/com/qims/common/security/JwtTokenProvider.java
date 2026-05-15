@@ -37,12 +37,21 @@ public class JwtTokenProvider {
      */
     public String generateToken(Long userId, String username, Long departmentId,
                                 List<String> roles, List<String> permissions) {
+        return generateToken(userId, username, departmentId, roles, permissions, 1);
+    }
+
+    /**
+     * 生成 JWT Token（含数据权限）
+     */
+    public String generateToken(Long userId, String username, Long departmentId,
+                                List<String> roles, List<String> permissions, Integer dataScope) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
         claims.put("username", username);
         claims.put("departmentId", departmentId);
         claims.put("roles", roles);
         claims.put("permissions", permissions);
+        claims.put("dataScope", dataScope);
 
         return Jwts.builder()
                 .claims(claims)
