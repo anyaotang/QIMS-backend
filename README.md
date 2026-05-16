@@ -1,22 +1,29 @@
 # QIMS - 质量检测管理系统
 
+## API文档
+
+| 资源           | URL                                   |
+|:-------------|:--------------------------------------|
+| Swagger UI   | http://localhost:8888/swagger-ui.html |
+| OpenAPI JSON | http://localhost:8888/v3/api-docs     |
+
 ## 项目简介
 
 QIMS (Quality Inspection Management System) 是一个基于 Spring Boot 3.2 构建的质量检测管理系统后端服务，提供检测任务管理、数据采集、告警通知等核心功能。
 
 ## 技术栈
 
-| 分类 | 技术 | 版本 |
-| :--- | :--- | :--- |
-| 语言 | Java | 17 |
-| 框架 | Spring Boot | 3.2.5 |
-| ORM | MyBatis-Plus | 3.5.6 |
-| 认证 | JWT | 0.12.5 |
-| 定时任务 | Quartz | Spring Boot 集成 |
-| Excel处理 | Apache POI | 5.2.5 |
-| 工具类 | Hutool | 5.8.26 |
-| 对象映射 | MapStruct | 1.5.5.Final |
-| 数据库 | MySQL | 8.0+ |
+| 分类      | 技术           | 版本             |
+|:--------|:-------------|:---------------|
+| 语言      | Java         | 17             |
+| 框架      | Spring Boot  | 3.2.5          |
+| ORM     | MyBatis-Plus | 3.5.6          |
+| 认证      | JWT          | 0.12.5         |
+| 定时任务    | Quartz       | Spring Boot 集成 |
+| Excel处理 | Apache POI   | 5.2.5          |
+| 工具类     | Hutool       | 5.8.26         |
+| 对象映射    | MapStruct    | 1.5.5.Final    |
+| 数据库     | MySQL        | 8.0+           |
 
 ## 模块结构
 
@@ -90,35 +97,35 @@ QIMS-backend/
 
 ### 用户相关表
 
-| 表名 | 说明 |
-| :--- | :--- |
-| sys_user | 用户表 |
-| sys_role | 角色表 |
-| sys_permission | 权限表 |
-| sys_user_role | 用户角色关联 |
+| 表名                  | 说明     |
+|:--------------------|:-------|
+| sys_user            | 用户表    |
+| sys_role            | 角色表    |
+| sys_permission      | 权限表    |
+| sys_user_role       | 用户角色关联 |
 | sys_role_permission | 角色权限关联 |
 
 ### 检测相关表
 
-| 表名 | 说明 |
-| :--- | :--- |
-| qims_node | 节点表 |
-| qims_inspection_item | 检测项表 |
-| qims_inspection_task | 检测任务表 |
-| qims_inspection_record | 检测记录表 |
+| 表名                            | 说明     |
+|:------------------------------|:-------|
+| qims_node                     | 节点表    |
+| qims_inspection_item          | 检测项表   |
+| qims_inspection_task          | 检测任务表  |
+| qims_inspection_record        | 检测记录表  |
 | qims_inspection_default_value | 检测默认值表 |
 
 ### 实施相关表
 
-| 表名 | 说明 |
-| :--- | :--- |
-| qims_implementation_plan | 整改方案表 |
+| 表名                           | 说明    |
+|:-----------------------------|:------|
+| qims_implementation_plan     | 整改方案表 |
 | qims_implementation_feedback | 整改反馈表 |
 
 ### 日志表
 
-| 表名 | 说明 |
-| :--- | :--- |
+| 表名                | 说明    |
+|:------------------|:------|
 | sys_operation_log | 操作日志表 |
 
 ## 快速开始
@@ -155,75 +162,75 @@ java -jar quality-web/target/quality-web-1.0.0-SNAPSHOT.jar
 
 ### 认证接口
 
-| 方法 | 路径 | 描述 |
-| :--- | :--- | :--- |
-| POST | `/api/auth/login` | 用户登录 |
-| POST | `/api/auth/register` | 用户注册 |
-| POST | `/api/auth/logout` | 用户登出 |
-| GET | `/api/auth/menus` | 获取用户菜单 |
-| GET | `/api/auth/permissions` | 获取用户权限 |
+| 方法   | 路径                      | 描述     |
+|:-----|:------------------------|:-------|
+| POST | `/api/auth/login`       | 用户登录   |
+| POST | `/api/auth/register`    | 用户注册   |
+| POST | `/api/auth/logout`      | 用户登出   |
+| GET  | `/api/auth/menus`       | 获取用户菜单 |
+| GET  | `/api/auth/permissions` | 获取用户权限 |
 
 ### 用户管理
 
-| 方法 | 路径 | 描述 |
-| :--- | :--- | :--- |
-| GET | `/api/users` | 获取用户列表 |
-| GET | `/api/users/{id}` | 获取用户详情 |
-| POST | `/api/users` | 创建用户 |
-| PUT | `/api/users/{id}` | 更新用户 |
-| DELETE | `/api/users/{id}` | 删除用户 |
+| 方法     | 路径                | 描述     |
+|:-------|:------------------|:-------|
+| GET    | `/api/users`      | 获取用户列表 |
+| GET    | `/api/users/{id}` | 获取用户详情 |
+| POST   | `/api/users`      | 创建用户   |
+| PUT    | `/api/users/{id}` | 更新用户   |
+| DELETE | `/api/users/{id}` | 删除用户   |
 
 ### 检测项管理
 
-| 方法 | 路径 | 描述 |
-| :--- | :--- | :--- |
-| GET | `/api/inspection-items` | 获取检测项列表 |
-| GET | `/api/inspection-items/{id}` | 获取检测项详情 |
-| POST | `/api/inspection-items` | 创建检测项 |
-| PUT | `/api/inspection-items/{id}` | 更新检测项 |
-| DELETE | `/api/inspection-items/{id}` | 删除检测项 |
+| 方法     | 路径                           | 描述      |
+|:-------|:-----------------------------|:--------|
+| GET    | `/api/inspection-items`      | 获取检测项列表 |
+| GET    | `/api/inspection-items/{id}` | 获取检测项详情 |
+| POST   | `/api/inspection-items`      | 创建检测项   |
+| PUT    | `/api/inspection-items/{id}` | 更新检测项   |
+| DELETE | `/api/inspection-items/{id}` | 删除检测项   |
 
 ### 检测任务管理
 
-| 方法 | 路径 | 描述 |
-| :--- | :--- | :--- |
-| GET | `/api/inspection-tasks` | 获取任务列表 |
-| GET | `/api/inspection-tasks/{id}` | 获取任务详情 |
-| POST | `/api/inspection-tasks` | 创建任务 |
-| PUT | `/api/inspection-tasks/{id}` | 更新任务 |
-| DELETE | `/api/inspection-tasks/{id}` | 删除任务 |
+| 方法     | 路径                           | 描述     |
+|:-------|:-----------------------------|:-------|
+| GET    | `/api/inspection-tasks`      | 获取任务列表 |
+| GET    | `/api/inspection-tasks/{id}` | 获取任务详情 |
+| POST   | `/api/inspection-tasks`      | 创建任务   |
+| PUT    | `/api/inspection-tasks/{id}` | 更新任务   |
+| DELETE | `/api/inspection-tasks/{id}` | 删除任务   |
 
 ### 检测记录管理
 
-| 方法 | 路径 | 描述 |
-| :--- | :--- | :--- |
-| GET | `/api/inspection-records` | 获取记录列表 |
-| GET | `/api/inspection-records/{id}` | 获取记录详情 |
-| POST | `/api/inspection-records/manual` | 手动录入记录 |
-| DELETE | `/api/inspection-records/{id}` | 删除记录 |
+| 方法     | 路径                               | 描述     |
+|:-------|:---------------------------------|:-------|
+| GET    | `/api/inspection-records`        | 获取记录列表 |
+| GET    | `/api/inspection-records/{id}`   | 获取记录详情 |
+| POST   | `/api/inspection-records/manual` | 手动录入记录 |
+| DELETE | `/api/inspection-records/{id}`   | 删除记录   |
 
 ### 报表接口
 
-| 方法 | 路径 | 描述 |
-| :--- | :--- | :--- |
-| GET | `/api/reports/daily` | 获取日报 |
-| GET | `/api/reports/weekly` | 获取周报 |
-| GET | `/api/reports/monthly` | 获取月报 |
-| GET | `/api/reports/export` | 导出Excel报表 |
+| 方法  | 路径                     | 描述        |
+|:----|:-----------------------|:----------|
+| GET | `/api/reports/daily`   | 获取日报      |
+| GET | `/api/reports/weekly`  | 获取周报      |
+| GET | `/api/reports/monthly` | 获取月报      |
+| GET | `/api/reports/export`  | 导出Excel报表 |
 
 ### 统计接口
 
-| 方法 | 路径 | 描述 |
-| :--- | :--- | :--- |
-| GET | `/api/statistics/overview` | 获取统计概览 |
-| GET | `/api/statistics/trend` | 获取趋势数据 |
+| 方法  | 路径                               | 描述      |
+|:----|:---------------------------------|:--------|
+| GET | `/api/statistics/overview`       | 获取统计概览  |
+| GET | `/api/statistics/trend`          | 获取趋势数据  |
 | GET | `/api/statistics/qualified-rate` | 获取合格率统计 |
 
 ### 日志接口
 
-| 方法 | 路径 | 描述 |
-| :--- | :--- | :--- |
-| GET | `/api/logs/operation` | 获取操作日志 |
+| 方法     | 路径                         | 描述     |
+|:-------|:---------------------------|:-------|
+| GET    | `/api/logs/operation`      | 获取操作日志 |
 | DELETE | `/api/logs/operation/{id}` | 删除操作日志 |
 
 ## 统一响应格式
@@ -252,13 +259,13 @@ java -jar quality-web/target/quality-web-1.0.0-SNAPSHOT.jar
 
 ## 状态码说明
 
-| 状态码 | 说明 |
-| :--- | :--- |
-| 200 | 成功 |
-| 400 | 请求参数错误 |
-| 401 | 未授权 |
-| 403 | 无权限 |
-| 404 | 资源不存在 |
+| 状态码 | 说明      |
+|:----|:--------|
+| 200 | 成功      |
+| 400 | 请求参数错误  |
+| 401 | 未授权     |
+| 403 | 无权限     |
+| 404 | 资源不存在   |
 | 500 | 服务器内部错误 |
 
 ## 定时任务
@@ -267,8 +274,8 @@ java -jar quality-web/target/quality-web-1.0.0-SNAPSHOT.jar
 
 1. **检测项定时采集**: 根据检测项配置的cron表达式定时采集数据
 2. **数据来源支持**:
-   - API采集: 从配置的API地址获取数据
-   - 公式计算: 使用Aviator表达式计算
+    - API采集: 从配置的API地址获取数据
+    - 公式计算: 使用Aviator表达式计算
 3. **告警推送**: 检测不达标时自动发送邮件通知
 
 ## 安全特性
@@ -373,8 +380,8 @@ ENTRYPOINT ["java", "-jar", "/app.jar"]
 
 ## 版本历史
 
-| 版本 | 日期 | 描述 |
-| :--- | :--- | :--- |
+| 版本             | 日期   | 描述                    |
+|:---------------|:-----|:----------------------|
 | 1.0.0-SNAPSHOT | 2026 | 1.0.0-SNAPSHOT版本 初始版本 |
 
 ## 许可证
