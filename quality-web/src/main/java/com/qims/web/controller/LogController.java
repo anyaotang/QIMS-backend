@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.qims.common.result.R;
 import com.qims.domain.entity.OperationLog;
 import com.qims.service.service.OperationLogService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +21,7 @@ import java.util.stream.Collectors;
 /**
  * 操作日志控制器
  */
+@Tag(name = "12 操作日志", description = "操作日志分页查询、模块列表")
 @RestController
 @RequestMapping("/api/log")
 @RequiredArgsConstructor
@@ -25,9 +29,7 @@ public class LogController {
 
     private final OperationLogService operationLogService;
 
-    /**
-     * 分页查询操作日志
-     */
+    @Operation(summary = "分页查询操作日志", description = "支持按模块和关键字过滤，关键字会匹配用户名、描述、URL、IP")
     @GetMapping("/page")
     @PreAuthorize("hasAuthority('log:view')")
     public R<Page<OperationLog>> page(
@@ -49,9 +51,7 @@ public class LogController {
         return R.ok(result);
     }
 
-    /**
-     * 获取可选的模块列表
-     */
+    @Operation(summary = "获取可选的模块列表", description = "返回系统已知的操作模块名称列表")
     @GetMapping("/modules")
     @PreAuthorize("hasAuthority('log:view')")
     public R<List<String>> modules() {

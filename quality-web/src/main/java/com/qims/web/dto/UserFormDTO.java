@@ -1,39 +1,41 @@
 package com.qims.web.dto;
 
 import com.qims.domain.entity.User;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
  * 用户表单 DTO（接收前端 userId 字段）
  */
 @Data
+@Schema(description = "用户表单请求")
 public class UserFormDTO {
 
-    /** 用户ID（编辑时传入，新建时为空） */
+    @Schema(description = "用户ID（编辑时传入，新建时为空）")
     private Long userId;
 
-    /** 用户名 */
+    @Schema(description = "用户名")
     private String username;
 
-    /** 密码（新建时必填，编辑时可选） */
+    @Schema(description = "密码（新建时必填，编辑时可选）")
     private String password;
 
-    /** 昵称（对应实体的 realName） */
+    @Schema(description = "昵称")
     private String nickname;
 
-    /** 邮箱 */
+    @Schema(description = "邮箱")
     private String email;
 
-    /** 手机号 */
+    @Schema(description = "手机号")
     private String phone;
 
-    /** 部门ID */
+    @Schema(description = "部门ID")
     private Long departmentId;
 
-    /** 角色ID列表（暂未使用，角色关联通过角色管理模块处理） */
+    @Schema(description = "角色ID列表")
     private Long[] roleIds;
 
-    /** 状态：1启用 0禁用 */
+    @Schema(description = "状态：1-启用 0-禁用")
     private Integer status;
 
     /**

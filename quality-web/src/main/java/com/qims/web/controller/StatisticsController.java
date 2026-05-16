@@ -5,6 +5,8 @@ import com.qims.domain.mapper.DepartmentMapper;
 import com.qims.domain.mapper.InspectionItemMapper;
 import com.qims.domain.mapper.InspectionRecordMapper;
 import com.qims.domain.mapper.NodeMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.access.prepost.PreAuthorize;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,7 @@ import java.util.Map;
 /**
  * 统计查询控制器
  */
+@Tag(name = "11 统计查询", description = "综合统计数据：合格率、检测项数、记录数、节点数、部门数")
 @RestController
 @RequestMapping("/api/statistics")
 @RequiredArgsConstructor
@@ -27,9 +30,7 @@ public class StatisticsController {
     private final NodeMapper nodeMapper;
     private final DepartmentMapper departmentMapper;
 
-    /**
-     * 综合统计（合格率、节点数、检测项数、记录数）
-     */
+    @Operation(summary = "综合统计", description = "返回合格率、检测项总数/启用数、今日记录数、不合格数、节点数、部门数")
     @GetMapping
     @PreAuthorize("hasAuthority('statistics:view')")
     public R<Map<String, Object>> statistics() {

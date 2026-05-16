@@ -76,6 +76,18 @@ app:
     header: Authorization
     prefix: "Bearer "
 
+# SpringDoc OpenAPI
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: method
+  default-flat-param-object: false
+
 # 日志级别
 logging:
   level:

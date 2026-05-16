@@ -1,5 +1,6 @@
 package com.qims.service.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,35 +15,36 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "菜单树节点")
 public class MenuDTO {
 
-    /** 菜单ID */
+    @Schema(description = "菜单ID")
     private Long id;
 
-    /** 菜单名称 */
+    @Schema(description = "菜单名称")
     private String name;
 
-    /** 权限编码 */
+    @Schema(description = "权限编码")
     private String code;
 
-    /** 类型：1-目录 2-菜单 3-按钮 */
+    @Schema(description = "类型：1-目录 2-菜单 3-按钮")
     private Integer type;
 
-    /** 父级ID */
+    @Schema(description = "父级ID")
     private Long parentId;
 
-    /** 排序 */
+    @Schema(description = "排序")
     private Integer sort;
 
-    /** 路由路径（前端路由） */
+    @Schema(description = "路由路径")
     private String path;
 
-    /** 图标 */
+    @Schema(description = "图标")
     private String icon;
 
-    /** 前端组件路径 */
+    @Schema(description = "前端组件路径")
     private String component;
 
-    /** 子菜单列表 */
+    @Schema(description = "子菜单列表")
     private List<MenuDTO> children;
 }

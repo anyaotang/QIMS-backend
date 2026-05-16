@@ -6,8 +6,11 @@ import com.qims.common.result.R;
 import com.qims.domain.entity.Role;
 import com.qims.service.service.PermissionService;
 import com.qims.service.service.RoleService;
-import org.springframework.security.access.prepost.PreAuthorize;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +18,7 @@ import java.util.List;
 /**
  * 角色管理控制器
  */
+@Tag(name = "03 角色管理", description = "角色 CRUD、角色权限分配")
 @RestController
 @RequestMapping("/api/role")
 @RequiredArgsConstructor
@@ -23,9 +27,7 @@ public class RoleController {
     private final RoleService roleService;
     private final PermissionService permissionService;
 
-    /**
-     * 分页查询角色列表
-     */
+    @Operation(summary = "分页查询角色列表", description = "支持按名称或编码关键字搜索")
     @GetMapping("/page")
     @PreAuthorize("hasAuthority('role:view')")
     public R<Page<Role>> page(@RequestParam(defaultValue = "1") int page,
@@ -39,9 +41,7 @@ public class RoleController {
         return R.ok(result);
     }
 
-    /**
-     * 获取所有角色列表（不分页，用于下拉选择）
-     */
+    @Operation(summary = "获取所有角色列表", description = "不分页，用于下拉选择")
     @GetMapping("/list")
     @PreAuthorize("hasAuthority('role:view')")
     public R<List<Role>> list() {
@@ -49,18 +49,14 @@ public class RoleController {
         return R.ok(roles);
     }
 
-    /**
-     * 获取角色详情
-     */
+    @Operation(summary = "获取角色详情")
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('role:view')")
     public R<Role> getById(@PathVariable Long id) {
         return R.ok(roleService.getById(id));
     }
 
-    /**
-     * 新增角色
-     */
+    @Operation(summary = "新增角色")
     @PostMapping
     @PreAuthorize("hasAuthority('role:add')")
     public R<Void> save(@RequestBody Role role) {
@@ -68,9 +64,7 @@ public class RoleController {
         return R.ok();
     }
 
-    /**
-     * 更新角色
-     */
+    @Operation(summary = "更新角色")
     @PutMapping
     @PreAuthorize("hasAuthority('role:edit')")
     public R<Void> update(@RequestBody Role role) {
@@ -78,9 +72,7 @@ public class RoleController {
         return R.ok();
     }
 
-    /**
-     * 删除角色
-     */
+    @Operation(summary = "删除角色")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('role:delete')")
     public R<Void> delete(@PathVariable Long id) {
@@ -89,18 +81,14 @@ public class RoleController {
         return R.ok();
     }
 
-    /**
-     * 获取角色的权限ID列表（用于权限配置弹窗回显）
-     */
+    @Operation(summary = "获取角色的权限ID列表", description = "用于权限配置弹窗回显")
     @GetMapping("/{roleId}/permissions")
     @PreAuthorize("hasAuthority('role:assignPerm')")
     public R<List<Long>> getRolePermissions(@PathVariable Long roleId) {
         return R.ok(permissionService.getRolePermissionIds(roleId));
     }
 
-    /**
-     * 为角色分配权限
-     */
+    @Operation(summary = "为角色分配权限", description = "替换指定角色的权限ID列表")
     @PutMapping("/{roleId}/permissions")
     @PreAuthorize("hasAuthority('role:assignPerm')")
     public R<Void> assignPermissions(@PathVariable Long roleId,
